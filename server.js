@@ -628,10 +628,13 @@ async function getAdminVendedorId(adminUserId) {
 }
 
 app.post('/api/admin/vender-milhares', authenticate, requireAdmin, async (req, res) => {
-  const { milhares, data_sorteio, cliente_nome, cliente_telefone, metodo_pagamento } = req.body;
+  const { milhares, data_sorteio, cliente_nome, cliente_telefone, cliente_cpf, metodo_pagamento } = req.body;
 
-  if (!milhares || !data_sorteio || !cliente_nome || !cliente_telefone || !metodo_pagamento) {
+  if (!milhares || !data_sorteio || !cliente_nome || !cliente_telefone || !cliente_cpf || !metodo_pagamento) {
     return res.status(400).json({ error: 'Preencha todos os dados da venda' });
+  }
+  if (!/^\d{11}$/.test(cliente_cpf)) {
+    return res.status(400).json({ error: 'CPF inválido. Deve conter 11 dígitos.' });
   }
 
   const vendedor_id = await getAdminVendedorId(req.user.id)
@@ -700,14 +703,14 @@ app.post('/api/admin/vender-milhares', authenticate, requireAdmin, async (req, r
     if (!cliente) {
       const { data: newCli, error: cliErr } = await supabase
         .from('clientes')
-        .insert({ nome: cliente_nome, telefone: cliente_telefone })
+        .insert({ nome: cliente_nome, telefone: cliente_telefone, cpf: cliente_cpf })
         .select()
         .single()
       if (cliErr) throw cliErr
       cliente_id = newCli.id
     } else {
       cliente_id = cliente.id
-      await supabase.from('clientes').update({ nome: cliente_nome }).eq('id', cliente_id)
+      await supabase.from('clientes').update({ nome: cliente_nome, cpf: cliente_cpf }).eq('id', cliente_id)
     }
 
     const nowStr = new Date().toISOString()
@@ -770,6 +773,7 @@ app.post('/api/admin/vender-milhares', authenticate, requireAdmin, async (req, r
       data_venda: nowStr,
       cliente_nome,
       cliente_telefone,
+      cliente_cpf,
       metodo_pagamento,
       cartelas: cartelasCriadas.map(c => ({
         id: c.id, numero_cartela: c.numero_cartela,
@@ -974,11 +978,14 @@ app.get('/api/vendedor/cartelas', authenticate, requireVendedor, async (req, res
 });
 
 app.post('/api/vendedor/vender', authenticate, requireVendedor, async (req, res) => {
-  const { cartela_id, cliente_nome, cliente_telefone, metodo_pagamento } = req.body;
+  const { cartela_id, cliente_nome, cliente_telefone, cliente_cpf, metodo_pagamento } = req.body;
   const vendedor_id = req.user.vendedorId;
 
-  if (!cartela_id || !cliente_nome || !cliente_telefone || !metodo_pagamento) {
+  if (!cartela_id || !cliente_nome || !cliente_telefone || !cliente_cpf || !metodo_pagamento) {
     return res.status(400).json({ error: 'Preencha todos os dados da venda' });
+  }
+  if (!/^\d{11}$/.test(cliente_cpf)) {
+    return res.status(400).json({ error: 'CPF inválido. Deve conter 11 dígitos.' });
   }
   if (metodo_pagamento !== 'dinheiro' && metodo_pagamento !== 'pix') {
     return res.status(400).json({ error: 'Método de pagamento inválido' });
@@ -1018,14 +1025,14 @@ app.post('/api/vendedor/vender', authenticate, requireVendedor, async (req, res)
     if (!cliente) {
       const { data: newCli, error: cliErr } = await supabase
         .from('clientes')
-        .insert({ nome: cliente_nome, telefone: cliente_telefone })
+        .insert({ nome: cliente_nome, telefone: cliente_telefone, cpf: cliente_cpf })
         .select()
         .single()
       if (cliErr) throw cliErr
       cliente_id = newCli.id
     } else {
       cliente_id = cliente.id
-      await supabase.from('clientes').update({ nome: cliente_nome }).eq('id', cliente_id)
+      await supabase.from('clientes').update({ nome: cliente_nome, cpf: cliente_cpf }).eq('id', cliente_id)
     }
 
     const nowStr = new Date().toISOString()
@@ -1073,11 +1080,14 @@ app.post('/api/vendedor/vender', authenticate, requireVendedor, async (req, res)
 });
 
 app.post('/api/vendedor/vender-milhares', authenticate, requireVendedor, async (req, res) => {
-  const { milhares, data_sorteio, cliente_nome, cliente_telefone, metodo_pagamento } = req.body;
+  const { milhares, data_sorteio, cliente_nome, cliente_telefone, cliente_cpf, metodo_pagamento } = req.body;
   const vendedor_id = req.user.vendedorId;
 
-  if (!milhares || !data_sorteio || !cliente_nome || !cliente_telefone || !metodo_pagamento) {
+  if (!milhares || !data_sorteio || !cliente_nome || !cliente_telefone || !cliente_cpf || !metodo_pagamento) {
     return res.status(400).json({ error: 'Preencha todos os dados da venda' });
+  }
+  if (!/^\d{11}$/.test(cliente_cpf)) {
+    return res.status(400).json({ error: 'CPF inválido. Deve conter 11 dígitos.' });
   }
   if (metodo_pagamento !== 'dinheiro' && metodo_pagamento !== 'pix') {
     return res.status(400).json({ error: 'Método de pagamento inválido' });
@@ -1141,14 +1151,14 @@ app.post('/api/vendedor/vender-milhares', authenticate, requireVendedor, async (
     if (!cliente) {
       const { data: newCli, error: cliErr } = await supabase
         .from('clientes')
-        .insert({ nome: cliente_nome, telefone: cliente_telefone })
+        .insert({ nome: cliente_nome, telefone: cliente_telefone, cpf: cliente_cpf })
         .select()
         .single()
       if (cliErr) throw cliErr
       cliente_id = newCli.id
     } else {
       cliente_id = cliente.id
-      await supabase.from('clientes').update({ nome: cliente_nome }).eq('id', cliente_id)
+      await supabase.from('clientes').update({ nome: cliente_nome, cpf: cliente_cpf }).eq('id', cliente_id)
     }
 
     const nowStr = new Date().toISOString()
@@ -1229,6 +1239,7 @@ app.post('/api/vendedor/vender-milhares', authenticate, requireVendedor, async (
       data_venda: nowStr,
       cliente_nome,
       cliente_telefone,
+      cliente_cpf,
       metodo_pagamento,
       cartelas: cartelasCriadas.map(c => ({
         id: c.id,

@@ -194,6 +194,17 @@ function setupEventListeners() {
         });
     }
 
+    // Input validation: nome only letters, telefone only numbers, CPF only numbers
+    document.getElementById('vendaClienteNome').addEventListener('input', (e) => {
+        e.target.value = e.target.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '');
+    });
+    document.getElementById('vendaClienteTelefone').addEventListener('input', (e) => {
+        e.target.value = e.target.value.replace(/\D/g, '');
+    });
+    document.getElementById('vendaClienteCpf').addEventListener('input', (e) => {
+        e.target.value = e.target.value.replace(/\D/g, '').slice(0, 11);
+    });
+
     // Random milhares button
     const randomMilharesBtn = document.getElementById('randomMilharesBtn');
     randomMilharesBtn.addEventListener('click', () => {
@@ -206,7 +217,13 @@ function setupEventListeners() {
         const data_sorteio = document.getElementById('vendaDataSorteio').value;
         const cName = document.getElementById('vendaClienteNome').value;
         const cPhone = document.getElementById('vendaClienteTelefone').value;
+        const cCpf = document.getElementById('vendaClienteCpf').value;
         const payment = document.querySelector('input[name="vendaPaymentMethod"]:checked').value;
+
+        if (cCpf.length !== 11) {
+            showToast('CPF inválido. Deve conter 11 dígitos.', 'danger');
+            return;
+        }
 
         const inputs = document.querySelectorAll('.milhar-input');
         const milhares = [];
@@ -238,6 +255,7 @@ function setupEventListeners() {
                     data_sorteio,
                     cliente_nome: cName,
                     cliente_telefone: cPhone,
+                    cliente_cpf: cCpf,
                     metodo_pagamento: payment
                 })
             });
@@ -306,6 +324,16 @@ function setupEventListeners() {
         });
     }
 
+    document.getElementById('admVendaClienteNome').addEventListener('input', (e) => {
+        e.target.value = e.target.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '');
+    });
+    document.getElementById('admVendaClienteTelefone').addEventListener('input', (e) => {
+        e.target.value = e.target.value.replace(/\D/g, '');
+    });
+    document.getElementById('admVendaClienteCpf').addEventListener('input', (e) => {
+        e.target.value = e.target.value.replace(/\D/g, '').slice(0, 11);
+    });
+
     const admRandomMilharesBtn = document.getElementById('admRandomMilharesBtn');
     admRandomMilharesBtn.addEventListener('click', () => {
         fillRandomMilhares('#admMilharesInputsContainer');
@@ -317,7 +345,13 @@ function setupEventListeners() {
         const data_sorteio = document.getElementById('admVendaDataSorteio').value;
         const cName = document.getElementById('admVendaClienteNome').value;
         const cPhone = document.getElementById('admVendaClienteTelefone').value;
+        const cCpf = document.getElementById('admVendaClienteCpf').value;
         const payment = document.querySelector('input[name="admVendaPaymentMethod"]:checked').value;
+
+        if (cCpf.length !== 11) {
+            showToast('CPF inválido. Deve conter 11 dígitos.', 'danger');
+            return;
+        }
 
         const inputs = document.querySelectorAll('#admMilharesInputsContainer .milhar-input');
         const milhares = [];
@@ -349,6 +383,7 @@ function setupEventListeners() {
                     data_sorteio,
                     cliente_nome: cName,
                     cliente_telefone: cPhone,
+                    cliente_cpf: cCpf,
                     metodo_pagamento: payment
                 })
             });
@@ -1475,6 +1510,8 @@ function showCupom(data) {
     document.getElementById('cupomVendedor').innerText = data.vendedor_nome;
     document.getElementById('cupomCliente').innerText = data.cliente_nome;
     document.getElementById('cupomTelefone').innerText = data.cliente_telefone;
+    const cpf = data.cliente_cpf || '';
+    document.getElementById('cupomCpf').innerText = cpf ? `${cpf.slice(0,3)}.${cpf.slice(3,6)}.${cpf.slice(6,9)}-${cpf.slice(9)}` : '-';
 
     let cartelasHtml = '';
     let total = 0;
