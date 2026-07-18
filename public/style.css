@@ -467,6 +467,28 @@ h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
 }
 
+/* Reports Grid */
+.reports-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* Seller Layout */
+.seller-layout {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.seller-layout > .seller-main-card {
+    flex: 2;
+}
+
+.seller-layout > .seller-sales-card {
+    flex: 1;
+}
+
 /* Split Layout */
 .split-layout {
     display: grid;
