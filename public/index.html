@@ -900,11 +900,23 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="app.js?v=2"></script>
+    <script src="app.js?v=3"></script>
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
+          navigator.serviceWorker.register('/sw.js?v=3').then(reg => {
+            if (reg.active && !navigator.serviceWorker.controller) {
+              window.location.reload()
+            }
+            reg.addEventListener('updatefound', () => {
+              const newSW = reg.installing
+              newSW.addEventListener('statechange', () => {
+                if (newSW.state === 'activated') {
+                  window.location.reload()
+                }
+              })
+            })
+          })
         })
       }
     </script>

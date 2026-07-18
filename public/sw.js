@@ -1,4 +1,4 @@
-const CACHE = 'sorte-sua-v2'
+const CACHE = 'sorte-sua-v3'
 
 const STATIC_ASSETS = [
   '/',
@@ -44,13 +44,15 @@ self.addEventListener('fetch', event => {
 })
 
 async function cacheFirst(request) {
-  const cached = await caches.match(request)
+  const url = new URL(request.url)
+  const cleanReq = url.origin + url.pathname
+  const cached = await caches.match(cleanReq)
   if (cached) return cached
   try {
     const res = await fetch(request)
     if (res.ok) {
       const copy = res.clone()
-      caches.open(CACHE).then(cache => cache.put(request, copy))
+      caches.open(CACHE).then(cache => cache.put(cleanReq, copy))
     }
     return res
   } catch {

@@ -5,3 +5,5 @@ config.json
 server_*.txt
 public/uploads/
 dist/
+
+.vercel
