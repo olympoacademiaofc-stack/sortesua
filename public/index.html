@@ -11,7 +11,13 @@
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23D32F2F'/%3E%3Cpath d='M32 12c-1.5 4-6 7-6 7s-4.5-3-6-7c-2-4.5 2-8 6-6 2 1 4 4 6 6 2-2 4-5 6-6 4-2 8 1.5 6 6-1.5 4-6 7-6 7s-4.5-3-6-7z' fill='%23D4AF37' transform='translate(0,8)'/%3E%3Cpath d='M18 28c4 1.5 7 6 7 6s-3 4.5-7 6c-4.5 2-8-2-6-6 1-2 4-4 6-6z' fill='%23D4AF37' transform='translate(8,0)'/%3E%3Cpath d='M46 28c-4 1.5-7 6-7 6s3 4.5 7 6c4.5 2 8-2 6-6-1-2-4-4-6-6z' fill='%23D4AF37' transform='translate(-8,0)'/%3E%3Cpath d='M32 44c-1.5-4-6-7-6-7s-4.5 3-6 7c-2 4.5 2 8 6 6 2-1 4-4 6-6 2 2 4 5 6 6 4 2 8-1.5 6-6-1.5-4-6-7-6-7s-4.5 3-6 7z' fill='%23D4AF37' transform='translate(0,-8)'/%3E%3C/svg%3E">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+    <link rel="apple-touch-icon" href="/icon-192.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#dc2626">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 <body>
     <!-- Top Global Header -->
@@ -883,5 +889,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="app.js"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+        })
+      }
+    </script>
 </body>
 </html>
