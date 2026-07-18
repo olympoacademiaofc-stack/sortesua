@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node dist/server.js",
     "dev": "node server.js",
-    "build": "node build.js"
+    "build": "node build.js",
+    "watch": "node watch.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.7",
