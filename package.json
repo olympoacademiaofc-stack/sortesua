@@ -4,7 +4,7 @@
   "description": "Sistema para controle de venda de cartelas de milhar",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node dist/server.js",
     "dev": "node server.js",
     "build": "node build.js"
   },
