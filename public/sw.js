@@ -1,4 +1,4 @@
-const CACHE = 'sorte-sua-v1'
+const CACHE = 'sorte-sua-v2'
 
 const STATIC_ASSETS = [
   '/',
