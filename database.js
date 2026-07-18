@@ -53,14 +53,68 @@ async function runSchema() {
     }
   } catch {}
 
+  console.log('Tabelas não encontradas. Tentando criar automaticamente...')
+
+  try {
+    const fs = require('fs')
+    const path = require('path')
+    const schemaPath = path.join(__dirname, 'schema.sql')
+    if (fs.existsSync(schemaPath)) {
+      const sql = fs.readFileSync(schemaPath, 'utf8')
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_SERVICE_KEY,
+          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+          'Prefer': 'params=multiple-objects'
+        },
+        body: JSON.stringify({ query: sql })
+      })
+      if (res.ok) {
+        console.log('Schema criado automaticamente!')
+        schemaInicializado = true
+        return
+      }
+    }
+  } catch (e) {
+    console.warn('Tentativa 1 falhou:', e.message)
+  }
+
+  try {
+    const fs = require('fs')
+    const path = require('path')
+    const schemaPath = path.join(__dirname, 'schema.sql')
+    if (fs.existsSync(schemaPath)) {
+      const sql = fs.readFileSync(schemaPath, 'utf8')
+      const res = await fetch(`${SUPABASE_URL}/auth/v1/sql`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apiKey': SUPABASE_SERVICE_KEY,
+          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`
+        },
+        body: JSON.stringify({ query: sql })
+      })
+      if (res.ok) {
+        console.log('Schema criado automaticamente!')
+        schemaInicializado = true
+        return
+      }
+    }
+  } catch (e) {
+    console.warn('Tentativa 2 falhou:', e.message)
+  }
+
   console.warn('')
   console.warn('═══════════════════════════════════════════════════════')
-  console.warn('  ATENÇÃO: Tabelas do banco não encontradas!')
+  console.warn('  Não foi possível criar as tabelas automaticamente.')
   console.warn('')
-  console.warn('  Execute o conteúdo de schema.sql no SQL Editor do')
-  console.warn('  Supabase (Dashboard > SQL Editor) para criar as')
-  console.warn('  tabelas antes de usar o sistema.')
-  console.warn('  Ou reinicie o servidor após criar as tabelas.')
+  console.warn('  Acesse o SQL Editor do Supabase:')
+  console.warn('  https://supabase.com/dashboard/project/qelaoqllltzsnsjxeopj/sql/new')
+  console.warn('')
+  console.warn('  Copie TODO o conteúdo do arquivo schema.sql e cole')
+  console.warn('  no SQL Editor, depois clique em "Run" ou Ctrl+Enter.')
   console.warn('═══════════════════════════════════════════════════════')
   console.warn('')
 }

@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
 const multer = require('multer');
 const crypto = require('crypto');
 
@@ -65,6 +66,8 @@ function validatePasswordStrength(password) {
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const isVercel = process.env.VERCEL === '1'
+
 const SECRET = process.env.APP_SECRET || "asorteesuasecreto123_456789";
 
 function generateToken(user, vendedorId = null) {
@@ -117,7 +120,9 @@ function requireVendedor(req, res, next) {
 app.use(cors());
 app.use(express.json());
 
-const uploadsDir = path.join(BASE_DIR, 'public', 'uploads');
+const uploadsDir = isVercel
+  ? path.join(os.tmpdir(), 'uploads')
+  : path.join(BASE_DIR, 'public', 'uploads');
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
@@ -134,6 +139,10 @@ const upload = multer({ storage: storage });
 
 app.use(express.static(path.join(BASE_DIR, 'public')));
 
+if (isVercel) {
+  app.use('/uploads', express.static(uploadsDir));
+}
+
 let pixConfig = {
   chave: 'financeiro@asorteesua.com',
   qrCodeUrl: '/uploads/pix_qrcode.png'
@@ -147,7 +156,7 @@ let pixConfig = {
 })();
 
 const qrcodeFile = path.join(uploadsDir, 'pix_qrcode.png');
-if (process.env.VERCEL !== '1' && !fs.existsSync(qrcodeFile)) {
+if (!isVercel && !fs.existsSync(qrcodeFile)) {
   const dummyPng = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=', 'base64');
   fs.writeFileSync(qrcodeFile, dummyPng);
 }
