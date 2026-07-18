@@ -4,7 +4,28 @@ const crypto = require('crypto')
 const SUPABASE_URL = process.env.SUPABASE_URL
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY)
+if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
+  console.error('')
+  console.error('═══════════════════════════════════════════════════')
+  console.error('  ERRO: Supabase não configurado')
+  console.error('')
+  console.error('  Variáveis de ambiente necessárias:')
+  console.error('    SUPABASE_URL')
+  console.error('    SUPABASE_SERVICE_KEY')
+  console.error('')
+  console.error('  Configure no arquivo .env (local) ou no')
+  console.error('  dashboard da Vercel (Environment Variables).')
+  console.error('═══════════════════════════════════════════════════')
+  console.error('')
+}
+
+let supabase
+try {
+  supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY)
+} catch (e) {
+  console.error('Erro ao criar cliente Supabase:', e.message)
+  process.exit(1)
+}
 
 function hashPassword(password) {
   return crypto.createHash('sha256').update(password).digest('hex')
