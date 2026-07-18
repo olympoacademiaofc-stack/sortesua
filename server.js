@@ -8,7 +8,8 @@ const crypto = require('crypto');
 
 const { supabase, initDb, hashPassword } = require('./database');
 
-const CONFIG_PATH = path.join(__dirname, 'config.json')
+const BASE_DIR = process.env.VERCEL ? process.cwd() : __dirname
+const CONFIG_PATH = path.join(BASE_DIR, 'config.json')
 function readConfig() {
   try {
     const raw = fs.readFileSync(CONFIG_PATH, 'utf8')
