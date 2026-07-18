@@ -1,6 +1,6 @@
 node_modules/
 *.db
 .env
-
 config.json
-.env
+server_*.txt
+public/uploads/

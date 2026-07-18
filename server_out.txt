@@ -1,3 +1,0 @@
-◇ injected env (2) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
-Servidor rodando na porta 3000
-Acesse em http://localhost:3000

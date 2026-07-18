@@ -1,7 +1,7 @@
 const { createClient } = require('@supabase/supabase-js')
 const crypto = require('crypto')
 
-const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kygrvxoqipzvbephpjyw.supabase.co'
+const SUPABASE_URL = process.env.SUPABASE_URL
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY)

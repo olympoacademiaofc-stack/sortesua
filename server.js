@@ -80,7 +80,7 @@ function validatePasswordStrength(password) {
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const SECRET = "asorteesuasecreto123_456789";
+const SECRET = process.env.APP_SECRET || "asorteesuasecreto123_456789";
 
 function generateToken(user, vendedorId = null) {
   const vid = vendedorId || '';
